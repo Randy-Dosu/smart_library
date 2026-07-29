@@ -1,0 +1,1 @@
+Error on login: "Database error querying schema"
