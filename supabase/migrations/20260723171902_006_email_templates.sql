@@ -3,7 +3,7 @@
 
 -- Borrow Confirmation Email HTML
 create or replace function get_borrow_confirmation_email_html(p_title text, p_format text, p_due_date timestamptz, p_loan_id uuid, p_user_name text)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     <!DOCTYPE html>
     <html>
@@ -39,13 +39,13 @@ returns text language sql as $$
       </div>
     </body>
     </html>
-  $$, COALESCE(%s, 'Student'), %s, %s, %s, %s, to_char(%s, 'YYYY-MM-DD'), %s, %s)
-  from (select %s as app_url) u;
-$$;
+  $$, COALESCE(p_user_name, 'Student'), p_title, p_format, p_title, p_format, to_char(p_due_date, 'YYYY-MM-DD'), p_loan_id::text, app_url)
+  from (select 'https://library.knust.edu.gh'::text as app_url) u;
+$body$;
 
 -- Borrow Confirmation Email Text
 create or replace function get_borrow_confirmation_email_text(p_title text, p_format text, p_due_date timestamptz, p_loan_id uuid, p_user_name text)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     Book Borrowed: %s
 
@@ -60,12 +60,12 @@ returns text language sql as $$
     View your loans at: %s/dashboard
 
     KNUST Library Management System
-  $$, %s, COALESCE(%s, 'Student'), %s, %s, to_char(%s, 'YYYY-MM-DD'), %s, %s);
-$$;
+  $$, p_title, COALESCE(p_user_name, 'Student'), p_title, p_format, to_char(p_due_date, 'YYYY-MM-DD'), p_loan_id::text, 'https://library.knust.edu.gh');
+$body$;
 
 -- Due Reminder Email HTML
 create or replace function get_due_reminder_email_html(p_title text, p_user_name text, p_due_date timestamptz, p_loan_id uuid)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     <!DOCTYPE html>
     <html>
@@ -100,13 +100,13 @@ returns text language sql as $$
       </div>
     </body>
     </html>
-  $$, COALESCE(%s, 'Student'), %s, to_char(%s, 'YYYY-MM-DD'), %s, %s, %s)
-  from (select %s as app_url) u;
-$$;
+  $$, COALESCE(p_user_name, 'Student'), p_title, to_char(p_due_date, 'YYYY-MM-DD'), p_title, to_char(p_due_date, 'YYYY-MM-DD'), p_loan_id::text, app_url)
+  from (select 'https://library.knust.edu.gh'::text as app_url) u;
+$body$;
 
 -- Due Reminder Email Text
 create or replace function get_due_reminder_email_text(p_title text, p_user_name text, p_due_date timestamptz, p_loan_id uuid)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     Due Date Reminder: "%s"
 
@@ -120,12 +120,12 @@ returns text language sql as $$
     View your loans at: %s/dashboard
 
     KNUST Library Management System
-  $$, %s, COALESCE(%s, 'Student'), %s, %s, %s, %s);
-$$;
+  $$, p_title, COALESCE(p_user_name, 'Student'), p_title, to_char(p_due_date, 'YYYY-MM-DD'), p_loan_id::text, 'https://library.knust.edu.gh');
+$body$;
 
 -- Overdue Notice Email HTML
 create or replace function get_overdue_email_html(p_title text, p_user_name text, p_due_date timestamptz, p_days_overdue int, p_fine_amount numeric, p_loan_id uuid)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     <!DOCTYPE html>
     <html>
@@ -162,13 +162,13 @@ returns text language sql as $$
       </div>
     </body>
     </html>
-  $$, COALESCE(%s, 'Student'), %s, to_char(%s, 'YYYY-MM-DD'), %s, %s, to_char(%s, 'YYYY-MM-DD'), %s, %s, %s, %s, %s)
-  from (select %s as app_url) u;
-$$;
+  $$, COALESCE(p_user_name, 'Student'), p_title, to_char(p_due_date, 'YYYY-MM-DD'), p_days_overdue, p_title, to_char(p_due_date, 'YYYY-MM-DD'), p_days_overdue, p_fine_amount, p_loan_id::text, app_url)
+  from (select 'https://library.knust.edu.gh'::text as app_url) u;
+$body$;
 
 -- Overdue Notice Email Text
 create or replace function get_overdue_email_text(p_title text, p_user_name text, p_due_date timestamptz, p_days_overdue int, p_fine_amount numeric, p_loan_id uuid)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     OVERDUE NOTICE: "%s"
 
@@ -183,12 +183,12 @@ returns text language sql as $$
     View your loans at: %s/dashboard
 
     KNUST Library Management System
-  $$, %s, COALESCE(%s, 'Student'), %s, to_char(%s, 'YYYY-MM-DD'), %s, %s, %s, %s);
-$$;
+  $$, p_title, COALESCE(p_user_name, 'Student'), p_title, to_char(p_due_date, 'YYYY-MM-DD'), p_days_overdue, p_fine_amount, p_loan_id::text, 'https://library.knust.edu.gh');
+$body$;
 
 -- Reservation Ready Email HTML
 create or replace function get_reservation_ready_email_html(p_title text, p_format text, p_claim_expires_at timestamptz, p_user_name text)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     <!DOCTYPE html>
     <html>
@@ -223,13 +223,13 @@ returns text language sql as $$
       </div>
     </body>
     </html>
-  $$, COALESCE(%s, 'Student'), %s, %s, %s, to_char(%s, 'YYYY-MM-DD HH24:MI'), %s)
-  from (select %s as app_url) u;
-$$;
+  $$, COALESCE(p_user_name, 'Student'), p_title, p_title, p_format, to_char(p_claim_expires_at, 'YYYY-MM-DD HH24:MI'), app_url)
+  from (select 'https://library.knust.edu.gh'::text as app_url) u;
+$body$;
 
 -- Reservation Ready Email Text
 create or replace function get_reservation_ready_email_text(p_title text, p_format text, p_claim_expires_at timestamptz, p_user_name text)
-returns text language sql as $$
+returns text language sql as $body$
   select format($$
     Reservation Ready: "%s"
 
@@ -243,5 +243,5 @@ returns text language sql as $$
     Claim at: %s/dashboard
 
     KNUST Library Management System
-  $$, %s, COALESCE(%s, 'Student'), %s, %s, to_char(%s, 'YYYY-MM-DD HH24:MI'), %s);
-$$;
+  $$, p_title, COALESCE(p_user_name, 'Student'), p_title, p_format, to_char(p_claim_expires_at, 'YYYY-MM-DD HH24:MI'), 'https://library.knust.edu.gh');
+$body$;
