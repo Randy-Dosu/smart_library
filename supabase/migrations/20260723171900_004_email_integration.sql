@@ -4,7 +4,9 @@ create table if not exists email_logs (
   email           text not null,
   subject         text not null,
   type            text not null,
-  status          text default 'pending',  -- 'pending' | 'sent' | 'failed'
+  status          text default 'pending',
+  html            text,
+  "text"          text,
   brevo_response  jsonb,
   error_message   text,
   sent_at         timestamptz,
