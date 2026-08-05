@@ -547,46 +547,22 @@ begin
 end;
 $$;
 
--- ── due-date reminders ─────────────────────────────────────
-create or replace function send_due_reminders()
-returns jsonb language plpgsql security definer set search_path = public as $$
-declare
-  v_count int := 0;
-  v_loan  record;
-  v_book  record;
-begin
-  for v_loan in
-    select l.* from loans l
-    where l.status in ('active','overdue')
-      and l.due_date between now() and now() + interval '2 days'
-      and not exists (
-        select 1 from notifications n
-        where n.user_id = l.user_id
-          and n.type = 'reminder'
-          and n.link = '/loan/' || l.id::text
-          and n.created_at > now() - interval '3 days'
-      )
-  loop
-    select * into v_book from books where id = v_loan.book_id;
-    insert into notifications (user_id, type, message, link)
-    values (
-      v_loan.user_id,
-      'reminder',
-      'Reminder: "' || v_book.title || '" is due ' ||
-        to_char(v_loan.due_date at time zone 'GMT', 'YYYY-MM-DD HH24:MI'),
-      '/dashboard'
-    );
-    v_count := v_count + 1;
-  end loop;
-
-  return jsonb_build_object('ok', true, 'reminders', v_count);
-end;
-$$;
-
+-- ── EXECUTE grants for client-callable RPCs ────────────────
 grant execute on function borrow_book(uuid, text) to authenticated;
 grant execute on function return_book(uuid) to authenticated;
 grant execute on function renew_loan(uuid) to authenticated;
 grant execute on function reserve_book(uuid, text) to authenticated;
+grant execute on function claim_reservation(uuid) to authenticated;
+grant execute on function pay_fine(uuid) to authenticated;
+grant execute on function waive_fine(uuid) to authenticated;
+grant execute on function get_user_stats(uuid) to authenticated;
+grant execute on function get_librarian_analytics() to authenticated;
+
+-- Scheduled-job targets (invoked by the scheduled-tasks edge function via the
+-- service-role key). Granted explicitly so they remain callable if the project
+-- ever revokes the default PUBLIC EXECUTE privilege (Supabase hardening).
+grant execute on function expire_digital_loans() to authenticated, anon;
+grant execute on function mark_overdue_loans() to authenticated, anon;
 
 -- ── due-date reminders ─────────────────────────────────────
 create or replace function send_due_reminders()

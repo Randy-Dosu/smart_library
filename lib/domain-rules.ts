@@ -11,7 +11,7 @@ export const ROLE_CONFIG: Record<
   Role,
   { maxLoans: number | null; loanPeriodDays: number | null; label: string; domain: string }
 > = {
-  student: { maxLoans: 2, loanPeriodDays: 14, label: 'Student', domain: 'st.knust.edu.gh' },
+  student: { maxLoans: 3, loanPeriodDays: 14, label: 'Student', domain: 'st.knust.edu.gh' },
   postgrad: { maxLoans: 6, loanPeriodDays: 14, label: 'Post-Graduate', domain: 'st.knust.edu.gh' },
   staff: { maxLoans: 10, loanPeriodDays: 30, label: 'Staff', domain: 'stf.knust.edu.gh' },
   librarian: { maxLoans: null, loanPeriodDays: null, label: 'Librarian', domain: 'lib.knust.edu.gh' },

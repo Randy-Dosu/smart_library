@@ -24,7 +24,7 @@ A production-ready, hybrid (physical + digital) library management system for Kw
 | Rule | Student | Post-Graduate | Staff | Librarian |
 |------|---------|---------------|-------|-----------|
 | **Loan period** | 14 days | 14 days | 30 days | N/A |
-| **Max active loans** (physical + digital combined) | 2 | 6 | 10 | N/A |
+| **Max active loans** (physical + digital combined) | 3 | 6 | 10 | N/A |
 | **Overdue fine** | GHS 5/day | GHS 5/day | GHS 5/day | N/A |
 | **Email domain** | @st.knust.edu.gh | @st.knust.edu.gh | @stf.knust.edu.gh | @lib.knust.edu.gh (masked) |
 
