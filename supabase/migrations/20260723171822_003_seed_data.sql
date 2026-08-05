@@ -53,7 +53,7 @@ insert into faq_embeddings (question, answer)
 values
 ('How long can I borrow a book?', 'Students and post-graduate students can borrow books for 14 days. Staff can borrow for 30 days. This applies to both physical and digital books.'),
 ('What is the fine for late return?', 'The overdue fine for physical books is GHS 5 per day. This applies to all roles. There are no fines for digital loans — they simply expire after the due date.'),
-('How many books can I borrow at once?', 'Students can have up to 2 active loans. Post-graduate students can have up to 6 active loans. Staff can have up to 10 active loans. The limit counts any mix of physical and digital loans.'),
+('How many books can I borrow at once?', 'Students can have up to 3 active loans. Post-graduate students can have up to 6 active loans. Staff can have up to 10 active loans. The limit counts any mix of physical and digital loans.'),
 ('What email address do I use to register?', 'Students and post-graduate students use their @st.knust.edu.gh email. Staff use @stf.knust.edu.gh. Librarian accounts are created only by existing librarians and are not open for self-registration.'),
 ('Can I renew a loan?', 'Yes. You can renew a loan once, provided no one else has reserved the book and your fine balance is below GHS 50. The new due date is your original due date plus your full loan period (14 or 30 days).'),
 ('What happens if my fine balance is too high?', 'If your unpaid fine balance reaches GHS 50 or more, you cannot borrow or renew until you pay some or all of it. You can pay fines from your dashboard.'),
@@ -65,7 +65,7 @@ values
 ('What formats do books come in?', 'Books can be physical, digital, or both. Physical books are borrowed from the library counter. Digital books (e-books) give you an access link in your dashboard for the loan period.'),
 ('How do I access a digital book I have borrowed?', 'When you borrow a digital book, a read button appears in your dashboard under the Digital tab. The access link is only available while your loan is active.'),
 ('Can I borrow the same book twice at the same time?', 'No. You cannot have two active loans for the same title in the same format. You can, however, have one physical and one digital copy of a title that supports both, up to your loan limit.'),
-('What are the KNUST library loan periods by role?', 'Student: 14 days, 2 books max. Post-graduate: 14 days, 6 books max. Staff: 30 days, 10 books max. All roles pay GHS 5 per day for late physical returns.')
+('What are the KNUST library loan periods by role?', 'Student: 14 days, 3 books max. Post-graduate: 14 days, 6 books max. Staff: 30 days, 10 books max. All roles pay GHS 5 per day for late physical returns.')
 on conflict do nothing;
 
 -- ── Bootstrap librarian account ────────────────────────────

@@ -13,7 +13,7 @@ Extends `auth.users`. One row per library member.
 - `id` — links to auth.users.id (cascade delete)
 - `role` — 'student' | 'postgrad' | 'staff' | 'librarian'
 - `email`, `full_name`, `department`
-- `max_loans` — 2 (student), 6 (postgrad), 10 (staff), NULL (librarian)
+- `max_loans` — 3 (student), 6 (postgrad), 10 (staff), NULL (librarian)
 - `loan_period_days` — 14 (student/postgrad), 30 (staff)
 - `fine_balance` — running total of unpaid physical-loan fines (GHS)
 
@@ -312,7 +312,7 @@ begin
     if v_role not in ('student','postgrad') then
       raise exception 'KNUST student/postgrad accounts must use @st.knust.edu.gh';
     end if;
-    v_max    := case when v_role = 'student' then 2 else 6 end;
+    v_max    := case when v_role = 'student' then 3 else 6 end;
     v_period := 14;
   elsif v_domain = 'stf.knust.edu.gh' then
     if v_role <> 'staff' then
