@@ -50,6 +50,9 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      // Run as the calling user so RLS (books_select_all is `to authenticated`)
+      // returns rows. The frontend sends the user's access token here.
+      { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } },
     );
 
     // Fetch the full catalogue so Groq can pick from real books

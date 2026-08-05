@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 
 const signupRoles: { role: Role; label: string; domain: string; max: string; period: string }[] = [
-  { role: 'student', label: 'Student', domain: KNUST_DOMAINS.student, max: '2 books', period: '14 days' },
+  { role: 'student', label: 'Student', domain: KNUST_DOMAINS.student, max: '3 books', period: '14 days' },
   { role: 'postgrad', label: 'Post-Graduate', domain: KNUST_DOMAINS.postgrad, max: '6 books', period: '14 days' },
   { role: 'staff', label: 'Staff', domain: KNUST_DOMAINS.staff, max: '10 books', period: '30 days' },
 ];
@@ -222,7 +222,7 @@ export default function SignupPage() {
                   <Checkbox
                     id="acceptTerms"
                     checked={acceptTerms}
-                    onCheckedChange={setAcceptTerms}
+                    onCheckedChange={(v) => setAcceptTerms(v === true)}
                     required
                   />
                   <div className="text-sm text-muted-foreground pt-1">
@@ -240,7 +240,7 @@ export default function SignupPage() {
                   <Checkbox
                     id="acceptPrivacy"
                     checked={acceptPrivacy}
-                    onCheckedChange={setAcceptPrivacy}
+                    onCheckedChange={(v) => setAcceptPrivacy(v === true)}
                     required
                   />
                   <div className="text-sm text-muted-foreground pt-1">

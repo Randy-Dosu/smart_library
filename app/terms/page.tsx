@@ -82,9 +82,9 @@ export default function TermsPage() {
                 <h2 className="text-xl font-semibold">5. Borrowing Rules</h2>
                 <p>The following rules apply to all loans:</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li><strong>Loan limits:</strong> Students (2), Post-Graduates (6), Staff (10) — combined physical + digital</li>
+                  <li><strong>Loan limits:</strong> Students (3), Post-Graduates (6), Staff (10) — combined physical + digital</li>
                   <li><strong>Loan periods:</strong> Students/Post-Graduates (14 days), Staff (30 days)</li>
-                  <li><strong>Renewals:</strong> One renewal allowed per loan, if no reservation exists and fines < GHS 50</li>
+                  <li><strong>Renewals:</strong> One renewal allowed per loan, if no reservation exists and fines &lt; GHS 50</li>
                   <li><strong>Digital loans:</strong> Auto-expire after due date + 1-day grace period; no fines</li>
                   <li><strong>Overdue fines:</strong> GHS 5 per day per physical book; fines block borrowing at GHS 50+</li>
                 </ul>
