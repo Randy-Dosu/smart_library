@@ -10,10 +10,8 @@ import {
   ShieldCheck,
   Smartphone,
   Sparkles,
-  Clock,
-  Coins,
-  Layers,
   ArrowRight,
+  Layers,
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { Button } from '@/components/ui/button';
@@ -32,16 +30,6 @@ const features = [
     desc: 'Students, post-graduates, staff, and librarians each get tailored permissions and limits.',
   },
   {
-    icon: Clock,
-    title: 'Smart Loan Rules',
-    desc: '14-day student loans, 30-day staff loans, automatic renewals, and auto-expiring digital access.',
-  },
-  {
-    icon: Coins,
-    title: 'Fair Fines',
-    desc: 'GHS 5 per day on late physical returns, digital loans expire fine-free, and waivers for librarians.',
-  },
-  {
     icon: Smartphone,
     title: 'Mobile-First',
     desc: 'A responsive, animated interface built on Tailwind and shadcn/ui for any device.',
@@ -51,12 +39,6 @@ const features = [
     title: 'AI Book Recommender',
     desc: 'Tell our AI what you want to read or study and get personalized picks from the catalogue instantly.',
   },
-];
-
-const roleCards = [
-  { role: 'Student', loans: '2 books', period: '14 days', domain: '@st.knust.edu.gh' },
-  { role: 'Post-Graduate', loans: '6 books', period: '14 days', domain: '@st.knust.edu.gh' },
-  { role: 'Staff', loans: '10 books', period: '30 days', domain: '@stf.knust.edu.gh' },
 ];
 
 export default function Home() {
@@ -134,37 +116,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Role cards */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <h2 className="text-center text-2xl font-semibold mb-8">Loan rules by role</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {roleCards.map((r, i) => (
-            <Card key={r.role} className="animate-in-up" style={{ animationDelay: `${i * 80}ms` }}>
-              <CardContent className="pt-6">
-                <p className="font-semibold text-lg">{r.role}</p>
-                <div className="mt-4 space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Max loans</span>
-                    <span className="font-medium">{r.loans}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Loan period</span>
-                    <span className="font-medium">{r.period}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Email domain</span>
-                    <span className="font-medium text-xs">{r.domain}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <p className="text-center text-xs text-muted-foreground mt-4">
-          Late physical returns: GHS 5 per day. Digital loans expire fine-free after a 1-day grace period.
-        </p>
       </section>
 
       {/* Features */}

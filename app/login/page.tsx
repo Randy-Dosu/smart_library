@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Library, Loader2, AlertCircle } from "lucide-react";
@@ -26,9 +26,12 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  if (!loading && user && profile) {
-    router.push(profile.role === "librarian" ? "/librarian" : "/dashboard");
-  }
+  // Redirect after auth state is ready - use useEffect
+  useEffect(() => {
+    if (!loading && user && profile) {
+      router.push(profile.role === "librarian" ? "/librarian" : "/dashboard");
+    }
+  }, [loading, user, profile, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

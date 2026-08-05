@@ -82,7 +82,7 @@ export function AppShell({ children, librarian = false }: ShellProps) {
   return (
     <div className="min-h-screen bg-muted/30">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 h-16 border-b border-border/60 glass">
+      <header className="sticky top-0 z-40 h-16 border-b border-border/60 glass" suppressHydrationWarning>
         <div className="flex h-full items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-3">
             <button

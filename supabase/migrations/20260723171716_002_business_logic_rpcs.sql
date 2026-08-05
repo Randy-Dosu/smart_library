@@ -143,6 +143,18 @@ begin
       where book_id = p_book_id and status = 'waiting' and queue_position > v_res.queue_position;
   end if;
 
+  -- Queue email confirmation if user has email
+  if v_user.email is not null then
+    insert into email_logs (email, subject, type, status, html, text)
+    select 
+      v_user.email,
+      'Book Borrowed: ' || v_book.title,
+      'borrow_confirmation',
+      'pending',
+      get_borrow_confirmation_email_html(v_book.title, p_format, v_due, v_loan_id, COALESCE(v_user.full_name, 'Student')),
+      get_borrow_confirmation_email_text(v_book.title, p_format, v_due, v_loan_id, COALESCE(v_user.full_name, 'Student'));
+  end if;
+
   return jsonb_build_object('ok', true, 'loan_id', v_loan_id, 'due_date', v_due);
 end;
 $$;
@@ -575,11 +587,58 @@ grant execute on function borrow_book(uuid, text) to authenticated;
 grant execute on function return_book(uuid) to authenticated;
 grant execute on function renew_loan(uuid) to authenticated;
 grant execute on function reserve_book(uuid, text) to authenticated;
-grant execute on function claim_reservation(uuid) to authenticated;
-grant execute on function pay_fine(uuid) to authenticated;
-grant execute on function waive_fine(uuid) to authenticated;
-grant execute on function expire_digital_loans() to authenticated, anon;
-grant execute on function mark_overdue_loans() to authenticated, anon;
-grant execute on function get_user_stats(uuid) to authenticated;
-grant execute on function get_librarian_analytics() to authenticated;
+
+-- ── due-date reminders ─────────────────────────────────────
+create or replace function send_due_reminders()
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare
+  v_count int := 0;
+  v_email_count int := 0;
+  v_loan  record;
+  v_book  record;
+  v_user  record;
+begin
+  for v_loan in
+    select l.* from loans l
+    where l.status in ('active','overdue')
+      and l.due_date between now() and now() + interval '2 days'
+      and not exists (
+        select 1 from notifications n
+        where n.user_id = l.user_id
+          and n.type = 'reminder'
+          and n.link = '/loan/' || l.id::text
+          and n.created_at > now() - interval '3 days'
+      )
+  loop
+    select * into v_book from books where id = v_loan.book_id;
+    select * into v_user from profiles where id = v_loan.user_id;
+    
+    insert into notifications (user_id, type, message, link)
+    values (
+      v_loan.user_id,
+      'reminder',
+      'Reminder: "' || v_book.title || '" is due ' ||
+        to_char(v_loan.due_date at time zone 'GMT', 'YYYY-MM-DD HH24:MI'),
+      '/dashboard'
+    );
+    v_count := v_count + 1;
+
+    -- Queue email if user has email
+    if v_user.email is not null then
+      insert into email_logs (email, subject, type, status, html, text)
+      select 
+        v_user.email,
+        'Reminder: "' || v_book.title || '" is due ' || to_char(v_loan.due_date, 'YYYY-MM-DD'),
+        'due_reminder',
+        'pending',
+        get_due_reminder_email_html(v_book.title, COALESCE(v_user.full_name, 'Student'), v_loan.due_date, v_loan.id),
+        get_due_reminder_email_text(v_book.title, COALESCE(v_user.full_name, 'Student'), v_loan.due_date, v_loan.id);
+      v_email_count := v_email_count + 1;
+    end if;
+  end loop;
+
+  return jsonb_build_object('ok', true, 'reminders', v_count, 'emails_queued', v_email_count);
+end;
+$$;
+
 grant execute on function send_due_reminders() to authenticated, anon;

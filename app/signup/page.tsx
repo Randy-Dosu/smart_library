@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Library, Loader2, AlertCircle, Mail } from 'lucide-react';
@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const signupRoles: { role: Role; label: string; domain: string; max: string; period: string }[] = [
   { role: 'student', label: 'Student', domain: KNUST_DOMAINS.student, max: '2 books', period: '14 days' },
@@ -32,10 +33,14 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
 
-  if (!loading && user && profile) {
-    router.push(profile.role === 'librarian' ? '/librarian' : '/dashboard');
-  }
+  useEffect(() => {
+    if (!loading && user && profile) {
+      router.push(profile.role === 'librarian' ? '/librarian' : '/dashboard');
+    }
+  }, [loading, user, profile, router]);
 
   const expectedDomain = ROLE_CONFIG[role].domain;
   const fullEmail = `${username.trim().toLowerCase()}@${expectedDomain}`;
@@ -43,6 +48,11 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!acceptTerms || !acceptPrivacy) {
+      setError('You must accept the Terms of Service and Privacy Policy to continue');
+      return;
+    }
 
     if (!username.trim()) {
       setError('Enter your KNUST username');
@@ -203,6 +213,40 @@ export default function SignupPage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                   />
+                </div>
+              </div>
+
+              {/* Terms and Privacy checkboxes */}
+              <div className="space-y-3 p-4 bg-muted/30 rounded-lg border border-border/50">
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="acceptTerms"
+                    checked={acceptTerms}
+                    onCheckedChange={setAcceptTerms}
+                    required
+                  />
+                  <div className="text-sm text-muted-foreground pt-1">
+                    I agree to the{' '}
+                    <Link href="/terms" className="text-primary hover:underline">
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/privacy" className="text-primary hover:underline">
+                      Privacy Policy
+                    </Link>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="acceptPrivacy"
+                    checked={acceptPrivacy}
+                    onCheckedChange={setAcceptPrivacy}
+                    required
+                  />
+                  <div className="text-sm text-muted-foreground pt-1">
+                    I consent to KNUST Library processing my personal data for library services
+                    and communications as described in the Privacy Policy.
+                  </div>
                 </div>
               </div>
 
